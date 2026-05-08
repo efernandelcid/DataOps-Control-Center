@@ -4,24 +4,21 @@ export const getMetrics = async (req, res) => {
   try {
     const result = await pool.query(`
       SELECT
-        m.id,
-        c.nombre AS connection_name,
+        hl.id,
+        hl.connection_id,
+        c.nombre,
         c.motor,
-        m.cpu,
-        m.memory,
-        m.connections_count,
-        m.locks_count,
-        m.deadlocks_count,
-        m.disk_usage_mb,
-        m.capture_time
-      FROM db_metrics m
-      JOIN connections c
-      ON c.id = m.db_id
-      ORDER BY m.capture_time DESC
+        hl.status,
+        hl.message,
+        hl.response_time_ms,
+        hl.checked_at
+      FROM health_logs hl
+      INNER JOIN connections c ON c.id = hl.connection_id
+      ORDER BY hl.checked_at DESC
+      LIMIT 50
     `);
 
     res.json(result.rows);
-
   } catch (error) {
     res.status(500).json({
       message: error.message
@@ -33,15 +30,24 @@ export const getMetricsByConnection = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const result = await pool.query(`
-      SELECT *
-      FROM db_metrics
-      WHERE db_id = $1
-      ORDER BY capture_time DESC
-    `, [id]);
+    const result = await pool.query(
+      `
+      SELECT
+        id,
+        connection_id,
+        status,
+        message,
+        response_time_ms,
+        checked_at
+      FROM health_logs
+      WHERE connection_id = $1
+      ORDER BY checked_at DESC
+      LIMIT 50
+      `,
+      [id]
+    );
 
     res.json(result.rows);
-
   } catch (error) {
     res.status(500).json({
       message: error.message

@@ -5,11 +5,8 @@ import oracledb from "oracledb";
 const { Client } = pkg;
 
 export async function checkDatabase(connection) {
-
   try {
-
     switch (connection.motor) {
-
       case "PostgreSQL":
         return await checkPostgres(connection);
 
@@ -25,9 +22,7 @@ export async function checkDatabase(connection) {
           message: "Motor no soportado"
         };
     }
-
   } catch (error) {
-
     return {
       status: "ERROR",
       message: error.message
@@ -36,10 +31,9 @@ export async function checkDatabase(connection) {
 }
 
 async function checkPostgres(connection) {
-
   const client = new Client({
     host: connection.host,
-    port: connection.port,
+    port: Number(connection.port),
     database: connection.database_name,
     user: connection.user_name,
     password: connection.password
@@ -56,7 +50,6 @@ async function checkPostgres(connection) {
 }
 
 async function checkSQLServer(connection) {
-
   const pool = await sql.connect({
     user: connection.user_name,
     password: connection.password,
@@ -78,7 +71,6 @@ async function checkSQLServer(connection) {
 }
 
 async function checkOracle(connection) {
-
   const conn = await oracledb.getConnection({
     user: connection.user_name,
     password: connection.password,
