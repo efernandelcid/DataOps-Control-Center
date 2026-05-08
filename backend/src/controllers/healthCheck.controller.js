@@ -22,8 +22,8 @@ export const checkConnectionById = async (req, res) => {
     });
 
     await pool.query(
-      "UPDATE connections SET status = $1 WHERE id = $2",
-      [checkResult.status, id]
+    "UPDATE connections SET status = $1, last_message = $2 WHERE id = $3",
+    [checkResult.status, checkResult.message, id]
     );
 
     await pool.query(

@@ -20,8 +20,9 @@ async function cargarDashboard() {
         <td>${c.motor}</td>
         <td>${c.host}:${c.port}</td>
         <td class="${c.status}">${c.status}</td>
+        <td>${c.last_message || "Sin revisión reciente"}</td>
         <td>
-          <button onclick="checkConnection(${c.id})">Check</button>
+        <button onclick="checkConnection(${c.id})">Check</button>
         </td>
       </tr>
     `;

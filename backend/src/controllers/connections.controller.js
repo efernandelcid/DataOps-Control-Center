@@ -2,7 +2,9 @@ import pool from "../db/pool.js";
 
 export const getConnections = async (req, res) => {
   try {
-    const result = await pool.query("SELECT id, nombre, motor, host, port, database_name, user_name, status, created_at FROM connections ORDER BY id DESC");
+    const result = await pool.query(
+  "SELECT id, nombre, motor, host, port, database_name, user_name, status, last_message, created_at FROM connections ORDER BY id DESC"
+  );
     res.json(result.rows);
   } catch (error) {
     res.status(500).json({ message: error.message });
