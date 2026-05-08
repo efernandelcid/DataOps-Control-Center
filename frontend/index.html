@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>DataOps Control Center</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header>
+    <h1>DataOps Control Center</h1>
+    <p>Plataforma de monitoreo de bases de datos</p>
+  </header>
+
+  <main>
+    <section class="cards">
+      <div class="card"><h3>Conexiones</h3><p id="totalConnections">0</p></div>
+      <div class="card"><h3>Activas</h3><p id="activeConnections">0</p></div>
+      <div class="card"><h3>Alertas</h3><p id="totalAlerts">0</p></div>
+    </section>
+
+    <section class="panel">
+      <h2>Conexiones registradas</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Motor</th>
+            <th>Host</th>
+            <th>Estado</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody id="connectionsTable"></tbody>
+      </table>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
