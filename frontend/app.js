@@ -49,7 +49,12 @@ async function cargarDashboard() {
           <td class="${m.status}">${m.status}</td>
           <td>${m.message || "-"}</td>
           <td>${m.response_time_ms ?? "-"} ms</td>
-          <td>${m.checked_at ? new Date(m.checked_at).toLocaleString() : "-"}</td>
+          <td>${m.checked_at ? new Date(m.checked_at).toLocaleString("es-GT", {
+            timeZone: "America/Guatemala"
+        })
+    : "-"
+  }
+</td>
         </tr>
       `;
     });
