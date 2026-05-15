@@ -19,6 +19,53 @@ async function cargarDashboard() {
     console.error("Error cargando métricas avanzadas:", error);
   }
 
+  async function exportarCSV() {
+  const metricas = await fetch(`${API_URL}/metrics`).then(res => res.json());
+
+  let csv = "Base de datos,Motor,Estado,Mensaje,Tiempo,Fecha\n";
+
+  metricas.forEach(m => {
+    csv += `"${m.nombre || "-"}","${m.motor || "-"}","${m.status}","${m.message || "-"}","${m.response_time_ms ?? "-"} ms","${m.checked_at}"\n`;
+  });
+
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "reporte_monitoreo.csv";
+  link.click();
+
+  URL.revokeObjectURL(url);
+}
+
+window.exportarCSV = async function () {
+  try {
+    const metricas = await fetch(`${API_URL}/metrics`).then(res => res.json());
+
+    let csv = "Base de datos,Motor,Estado,Mensaje,Tiempo,Fecha\n";
+
+    metricas.forEach(m => {
+      csv += `"${m.nombre || "-"}","${m.motor || "-"}","${m.status || "-"}","${m.message || "-"}","${m.response_time_ms ?? "-"} ms","${m.checked_at || "-"}"\n`;
+    });
+
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "reporte_monitoreo.csv";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("Error exportando CSV:", error);
+    alert("No se pudo exportar el reporte.");
+  }
+};
+
   document.getElementById("totalConnections").textContent = conexiones.length;
   document.getElementById("activeConnections").textContent =
     conexiones.filter(c => c.status === "ACTIVE").length;
@@ -67,7 +114,9 @@ function cargarTablaConexiones(conexiones) {
           <span class="db-badge ${motorClass(c.motor)}">${c.motor}</span>
         </td>
         <td>${c.host}:${c.port}</td>
-        <td class="${c.status}">${c.status}</td>
+        <td>
+          <span class="status-badge ${c.status}">${c.status}</span>
+        </td>
         <td>${c.last_message || "Sin revisión reciente"}</td>
         <td>
           <button onclick="checkConnection(${c.id})">Check</button>
@@ -88,7 +137,9 @@ function cargarHistorial(metricas) {
       <tr>
         <td>${m.nombre || "-"}</td>
         <td>${m.motor || "-"}</td>
-        <td class="${m.status}">${m.status}</td>
+        <td>
+          <span class="status-badge ${m.status}">${m.status}</span>
+        </td>
         <td>${m.message || "-"}</td>
         <td>${m.response_time_ms ?? "-"} ms</td>
         <td>
