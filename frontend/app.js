@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:3000/api";
+const API_URL = window.APP_CONFIG?.API_URL || "http://localhost:3000/api";
 
 function setApiStatus(isOnline) {
   const apiStatus = document.getElementById("apiStatus");
