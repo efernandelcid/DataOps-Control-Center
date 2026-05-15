@@ -1,70 +1,39 @@
 const API_URL = "http://localhost:3000/api";
 
-async function cargarDashboard() {
-  const conexiones = await fetch(`${API_URL}/connections`).then(res => res.json());
-  const alertas = await fetch(`${API_URL}/alerts`).then(res => res.json());
+function setApiStatus(isOnline) {
+  const apiStatus = document.getElementById("apiStatus");
+  if (!apiStatus) return;
 
+  if (isOnline) {
+    apiStatus.textContent = "API conectada correctamente";
+    apiStatus.className = "api-status online";
+  } else {
+    apiStatus.textContent = "No se pudo conectar con la API";
+    apiStatus.className = "api-status offline";
+  }
+}
+
+async function cargarDashboard() {
+  let conexiones = [];
+  let alertas = [];
   let metricas = [];
   let dbMetrics = [];
 
   try {
+    conexiones = await fetch(`${API_URL}/connections`).then(res => res.json());
+    alertas = await fetch(`${API_URL}/alerts`).then(res => res.json());
     metricas = await fetch(`${API_URL}/metrics`).then(res => res.json());
-  } catch (error) {
-    console.error("Error cargando métricas:", error);
-  }
-
-  try {
     dbMetrics = await fetch(`${API_URL}/db-metrics`).then(res => res.json());
+
+    setApiStatus(true);
   } catch (error) {
-    console.error("Error cargando métricas avanzadas:", error);
+    console.error("Error cargando datos del dashboard:", error);
+    setApiStatus(false);
   }
-
-  async function exportarCSV() {
-  const metricas = await fetch(`${API_URL}/metrics`).then(res => res.json());
-
-  let csv = "Base de datos,Motor,Estado,Mensaje,Tiempo,Fecha\n";
-
-  metricas.forEach(m => {
-    csv += `"${m.nombre || "-"}","${m.motor || "-"}","${m.status}","${m.message || "-"}","${m.response_time_ms ?? "-"} ms","${m.checked_at}"\n`;
-  });
-
-  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-  const url = URL.createObjectURL(blob);
-
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = "reporte_monitoreo.csv";
-  link.click();
-
-  URL.revokeObjectURL(url);
+  const loadingStatus = document.getElementById("loadingStatus");
+if (loadingStatus) {
+  loadingStatus.style.display = "inline-block";
 }
-
-window.exportarCSV = async function () {
-  try {
-    const metricas = await fetch(`${API_URL}/metrics`).then(res => res.json());
-
-    let csv = "Base de datos,Motor,Estado,Mensaje,Tiempo,Fecha\n";
-
-    metricas.forEach(m => {
-      csv += `"${m.nombre || "-"}","${m.motor || "-"}","${m.status || "-"}","${m.message || "-"}","${m.response_time_ms ?? "-"} ms","${m.checked_at || "-"}"\n`;
-    });
-
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "reporte_monitoreo.csv";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
-    URL.revokeObjectURL(url);
-  } catch (error) {
-    console.error("Error exportando CSV:", error);
-    alert("No se pudo exportar el reporte.");
-  }
-};
 
   document.getElementById("totalConnections").textContent = conexiones.length;
   document.getElementById("activeConnections").textContent =
@@ -76,6 +45,17 @@ window.exportarCSV = async function () {
   cargarHistorial(metricas);
   cargarGraficaTiempoRespuesta(metricas);
   cargarMetricasAvanzadas(dbMetrics);
+  if (loadingStatus) {
+  loadingStatus.style.display = "none";
+}
+
+const lastUpdate = document.getElementById("lastUpdate");
+
+if (lastUpdate) {
+  lastUpdate.textContent = `Última actualización: ${new Date().toLocaleString("es-GT", {
+    timeZone: "America/Guatemala"
+  })}`;
+}
 }
 
 function motorClass(motor) {
@@ -219,9 +199,46 @@ function cargarMetricasAvanzadas(dbMetrics) {
   document.getElementById("avgDeadlocks").textContent = maxDeadlocks;
 }
 
+window.exportarCSV = async function () {
+  try {
+    const metricas = await fetch(`${API_URL}/metrics`).then(res => res.json());
+
+    let csv = "Base de datos,Motor,Estado,Mensaje,Tiempo,Fecha\n";
+
+    metricas.forEach(m => {
+      csv += `"${m.nombre || "-"}","${m.motor || "-"}","${m.status || "-"}","${m.message || "-"}","${m.response_time_ms ?? "-"} ms","${m.checked_at || "-"}"\n`;
+    });
+
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "reporte_monitoreo.csv";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("Error exportando CSV:", error);
+    alert("No se pudo exportar el reporte.");
+  }
+};
+
 async function checkConnection(id) {
-  await fetch(`${API_URL}/connections/${id}/check`);
-  cargarDashboard();
+  const buttons = document.querySelectorAll("button");
+  buttons.forEach(btn => btn.disabled = true);
+
+  try {
+    await fetch(`${API_URL}/connections/${id}/check`);
+    await cargarDashboard();
+  } catch (error) {
+    console.error("Error ejecutando check:", error);
+    alert("No se pudo revisar la conexión.");
+  } finally {
+    buttons.forEach(btn => btn.disabled = false);
+  }
 }
 
 cargarDashboard();

@@ -9,6 +9,20 @@
   <header>
     <h1>DataOps Control Center</h1>
     <p>Plataforma de monitoreo de bases de datos</p>
+
+    <div class="header-status">
+      <div id="apiStatus" class="api-status">
+        Verificando conexión con API...
+      </div>
+
+      <div id="loadingStatus" class="loading-status">
+        Actualizando datos...
+      </div>
+
+      <div id="lastUpdate" class="last-update">
+        Última actualización: pendiente
+      </div>
+    </div>
   </header>
 
   <main>
@@ -91,6 +105,7 @@
     <section class="panel">
       <h2>Historial reciente</h2>
       <button onclick="exportarCSV()">Exportar CSV</button>
+
       <table>
         <thead>
           <tr>

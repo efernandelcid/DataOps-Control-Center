@@ -164,3 +164,53 @@ button {
   background: #7f1d1d;
   color: #fecaca;
 }
+
+.api-status {
+  margin-top: 12px;
+  display: inline-block;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.api-status.online {
+  background: #14532d;
+  color: #bbf7d0;
+}
+
+.api-status.offline {
+  background: #7f1d1d;
+  color: #fecaca;
+}
+
+.loading-status {
+  margin-top: 10px;
+  margin-left: 10px;
+  display: none;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: #1e293b;
+  color: #bfdbfe;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.last-update {
+  margin-top: 10px;
+  color: #94a3b8;
+  font-size: 14px;
+}
+
+.header-status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
