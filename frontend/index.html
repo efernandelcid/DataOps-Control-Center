@@ -13,9 +13,61 @@
 
   <main>
     <section class="cards">
-      <div class="card"><h3>Conexiones</h3><p id="totalConnections">0</p></div>
-      <div class="card"><h3>Activas</h3><p id="activeConnections">0</p></div>
-      <div class="card"><h3>Alertas</h3><p id="totalAlerts">0</p></div>
+      <div class="card">
+        <h3>Conexiones</h3>
+        <p id="totalConnections">0</p>
+      </div>
+
+      <div class="card">
+        <h3>Activas</h3>
+        <p id="activeConnections">0</p>
+      </div>
+
+      <div class="card">
+        <h3>Alertas</h3>
+        <p id="totalAlerts">0</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Métricas avanzadas</h2>
+
+      <div class="metric-grid">
+        <div class="metric-box">
+          <h3>CPU promedio</h3>
+          <p id="avgCpu">0%</p>
+        </div>
+
+        <div class="metric-box">
+          <h3>Memoria promedio</h3>
+          <p id="avgMemory">0%</p>
+        </div>
+
+        <div class="metric-box">
+          <h3>Conexiones activas</h3>
+          <p id="avgConnections">0</p>
+        </div>
+
+        <div class="metric-box">
+          <h3>Uso disco</h3>
+          <p id="avgDisk">0 MB</p>
+        </div>
+
+        <div class="metric-box">
+          <h3>Locks activos</h3>
+          <p id="avgLocks">0</p>
+        </div>
+
+        <div class="metric-box">
+          <h3>Deadlocks</h3>
+          <p id="avgDeadlocks">0</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Alertas críticas</h2>
+      <div id="criticalAlerts"></div>
     </section>
 
     <section class="panel">
@@ -35,25 +87,31 @@
         <tbody id="connectionsTable"></tbody>
       </table>
     </section>
+
+    <section class="panel">
+      <h2>Historial reciente</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Base de datos</th>
+            <th>Motor</th>
+            <th>Estado</th>
+            <th>Mensaje</th>
+            <th>Tiempo</th>
+            <th>Fecha</th>
+          </tr>
+        </thead>
+        <tbody id="metricsTable"></tbody>
+      </table>
+    </section>
+
+    <section class="panel">
+      <h2>Rendimiento en tiempo real</h2>
+      <canvas id="responseChart"></canvas>
+    </section>
   </main>
-  <section class="panel">
-  <h2>Historial reciente</h2>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Base de datos</th>
-        <th>Motor</th>
-        <th>Estado</th>
-        <th>Mensaje</th>
-        <th>Tiempo</th>
-        <th>Fecha</th>
-      </tr>
-    </thead>
-    <tbody id="metricsTable"></tbody>
-  </table>
-</section>
-
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
