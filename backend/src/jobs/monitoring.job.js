@@ -3,7 +3,9 @@ import pool from "../db/pool.js";
 import { checkDatabase } from "../services/databaseCheck.service.js";
 
 export function startMonitoringJob() {
-  cron.schedule("*/30 * * * * *", async () => {
+  const intervalSeconds = process.env.MONITOR_INTERVAL_SECONDS || 30;
+
+cron.schedule(`*/${intervalSeconds} * * * * *`, async () => {
     console.log("Ejecutando monitoreo automático...");
 
     try {
