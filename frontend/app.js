@@ -21,6 +21,8 @@ import {
   renderGraficaTiempoRespuesta
 } from "./ui/metrics.ui.js";
 
+let conexionesGlobales = [];
+
 async function cargarDashboard() {
   let conexiones = [];
   let alertas = [];
@@ -29,6 +31,8 @@ async function cargarDashboard() {
 
   try {
     conexiones = await getConnections();
+    conexionesGlobales = conexiones;
+
     alertas = await getAlerts();
     metricas = await getMetrics();
     dbMetrics = await getDbMetrics();
@@ -41,7 +45,7 @@ async function cargarDashboard() {
 
   renderResumen(conexiones, alertas);
   renderAlertasCriticas(conexiones);
-  renderTablaConexiones(conexiones);
+  aplicarFiltrosConexiones();
   renderHistorial(metricas);
   renderGraficaTiempoRespuesta(metricas);
   renderMetricasAvanzadas(dbMetrics);
@@ -89,6 +93,41 @@ window.exportarCSV = async function () {
     alert("No se pudo exportar el reporte.");
   }
 };
+
+function aplicarFiltrosConexiones() {
+  const search = document.getElementById("searchConnection")?.value.toLowerCase() || "";
+  const motor = document.getElementById("filterMotor")?.value || "";
+  const status = document.getElementById("filterStatus")?.value || "";
+
+  const filtradas = conexionesGlobales.filter(c => {
+    const nombre = c.nombre?.toLowerCase() || "";
+    const host = c.host?.toLowerCase() || "";
+
+    const coincideBusqueda =
+      nombre.includes(search) ||
+      host.includes(search);
+
+    const coincideMotor = motor === "" || c.motor === motor;
+    const coincideStatus = status === "" || c.status === status;
+
+    return coincideBusqueda && coincideMotor && coincideStatus;
+  });
+
+  renderTablaConexiones(filtradas);
+
+  const filterResultCount = document.getElementById("filterResultCount");
+
+  if (filterResultCount) {
+    filterResultCount.textContent =
+      `Mostrando ${filtradas.length} de ${conexionesGlobales.length} conexiones`;
+  }
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("searchConnection")?.addEventListener("input", aplicarFiltrosConexiones);
+  document.getElementById("filterMotor")?.addEventListener("change", aplicarFiltrosConexiones);
+  document.getElementById("filterStatus")?.addEventListener("change", aplicarFiltrosConexiones);
+});
 
 cargarDashboard();
 setInterval(cargarDashboard, 10000);

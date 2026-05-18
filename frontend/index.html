@@ -86,6 +86,28 @@
 
     <section class="panel">
       <h2>Conexiones registradas</h2>
+
+      <div class="filters">
+        <input id="searchConnection" type="text" placeholder="Buscar conexión..." />
+
+        <select id="filterMotor">
+          <option value="">Todos los motores</option>
+          <option value="PostgreSQL">PostgreSQL</option>
+          <option value="SQLServer">SQL Server</option>
+          <option value="Oracle">Oracle</option>
+        </select>
+
+        <select id="filterStatus">
+          <option value="">Todos los estados</option>
+          <option value="ACTIVE">Activas</option>
+          <option value="ERROR">Errores</option>
+        </select>
+      </div>
+
+      <p id="filterResultCount" class="filter-count">
+        Mostrando 0 conexiones
+      </p>
+
       <table>
         <thead>
           <tr>
@@ -128,7 +150,7 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script type="module" src="app.js"></script>
   <script src="config.js"></script>
+  <script type="module" src="app.js"></script>
 </body>
 </html>
