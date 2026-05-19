@@ -3,7 +3,8 @@ import {
   getAlerts,
   getMetrics,
   getDbMetrics,
-  checkConnectionById
+  checkConnectionById,
+  getSystemStatus
 } from "./services/api.service.js";
 
 import {
@@ -28,6 +29,7 @@ async function cargarDashboard() {
   let alertas = [];
   let metricas = [];
   let dbMetrics = [];
+  let systemStatus = null;
 
   try {
     conexiones = await getConnections();
@@ -36,6 +38,7 @@ async function cargarDashboard() {
     alertas = await getAlerts();
     metricas = await getMetrics();
     dbMetrics = await getDbMetrics();
+    systemStatus = await getSystemStatus();
 
     setApiStatus(true);
   } catch (error) {
@@ -44,6 +47,12 @@ async function cargarDashboard() {
   }
 
   renderResumen(conexiones, alertas);
+
+  const systemStatusElement = document.getElementById("systemStatus");
+  if (systemStatusElement) {
+    systemStatusElement.textContent = systemStatus?.status || "ERROR";
+  }
+
   renderAlertasCriticas(conexiones);
   aplicarFiltrosConexiones();
   renderHistorial(metricas);

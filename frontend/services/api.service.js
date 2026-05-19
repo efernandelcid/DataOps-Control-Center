@@ -19,3 +19,7 @@ export async function getDbMetrics() {
 export async function checkConnectionById(id) {
   return await fetch(`${API_URL}/connections/${id}/check`);
 }
+
+export async function getSystemStatus() {
+  return await fetch(`${API_URL}/system-status`).then(res => res.json());
+}

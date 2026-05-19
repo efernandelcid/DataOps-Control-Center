@@ -9,6 +9,7 @@ import connectionsRoutes from "./routes/connections.routes.js";
 import healthCheckRoutes from "./routes/healthCheck.routes.js";
 import metricsRoutes from "./routes/metrics.routes.js";
 import alertsRoutes from "./routes/alerts.routes.js";
+import systemStatusRoutes from "./routes/systemStatus.routes.js";
 
 
 const app = express();
@@ -23,5 +24,6 @@ app.use("/api/connections", healthCheckRoutes);
 app.use("/api/metrics", metricsRoutes);
 app.use("/api/alerts", alertsRoutes);
 app.use("/api/db-metrics", dbMetricsRoutes);
+app.use("/api/system-status", systemStatusRoutes);
 
 export default app;
