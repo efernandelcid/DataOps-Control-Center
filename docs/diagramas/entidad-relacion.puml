@@ -1,0 +1,55 @@
+@startuml
+title Diagrama Entidad-Relación - DataOps Control Center
+
+entity "connections" as connections {
+  * id : SERIAL <<PK>>
+  --
+  nombre : VARCHAR
+  motor : VARCHAR
+  host : VARCHAR
+  port : INTEGER
+  database_name : VARCHAR
+  user_name : VARCHAR
+  password_encrypted : TEXT
+  status : VARCHAR
+  last_message : TEXT
+  created_at : TIMESTAMP
+}
+
+entity "health_logs" as health_logs {
+  * id : SERIAL <<PK>>
+  --
+  connection_id : INTEGER <<FK>>
+  status : VARCHAR
+  message : TEXT
+  response_time_ms : INTEGER
+  checked_at : TIMESTAMP
+}
+
+entity "db_metrics" as db_metrics {
+  * id : SERIAL <<PK>>
+  --
+  connection_id : INTEGER <<FK>>
+  cpu : NUMERIC
+  memory : NUMERIC
+  connections_count : INTEGER
+  locks_count : INTEGER
+  deadlocks_count : INTEGER
+  disk_usage_mb : NUMERIC
+  capture_time : TIMESTAMP
+}
+
+entity "alert_log" as alert_log {
+  * id : SERIAL <<PK>>
+  --
+  connection_id : INTEGER <<FK>>
+  status : VARCHAR
+  message : TEXT
+  created_at : TIMESTAMP
+}
+
+connections ||--o{ health_logs : genera
+connections ||--o{ db_metrics : registra
+connections ||--o{ alert_log : produce
+
+@enduml

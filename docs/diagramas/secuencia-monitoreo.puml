@@ -1,0 +1,41 @@
+@startuml
+title Diagrama de Secuencia - Monitoreo Automático
+
+actor "Sistema Cron" as Cron
+participant "Monitoring Job" as Job
+participant "PostgreSQL Central" as DB
+participant "Database Check Service" as Service
+database "PostgreSQL" as PG
+database "SQL Server" as SQLS
+database "Oracle" as ORA
+
+Cron -> Job: Ejecutar cada 30 segundos
+Job -> DB: Consultar conexiones registradas
+DB --> Job: Lista de conexiones
+
+loop Por cada conexión
+  Job -> Service: checkDatabase(connection)
+
+  alt Motor PostgreSQL
+    Service -> PG: SELECT NOW(), métricas
+    PG --> Service: Resultado
+  else Motor SQL Server
+    Service -> SQLS: SELECT GETDATE()
+    SQLS --> Service: Resultado
+  else Motor Oracle
+    Service -> ORA: SELECT SYSDATE FROM dual
+    ORA --> Service: Resultado
+  else Motor no soportado
+    Service --> Job: ERROR
+  end
+
+  Service --> Job: Estado, mensaje y métricas
+
+  Job -> DB: UPDATE connections
+  Job -> DB: INSERT health_logs
+  Job -> DB: INSERT db_metrics
+end
+
+Job --> Cron: Monitoreo finalizado
+
+@enduml

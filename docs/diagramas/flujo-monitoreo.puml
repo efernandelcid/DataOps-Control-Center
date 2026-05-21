@@ -1,0 +1,52 @@
+@startuml
+title Flujo de Monitoreo Automático - DataOps Control Center
+
+start
+
+:Inicio del Monitoring Job;
+:Ejecutar tarea programada cada 30 segundos;
+
+:Consultar conexiones registradas en tabla connections;
+
+if (¿Existen conexiones?) then (Sí)
+
+  :Recorrer cada conexión;
+
+  repeat
+    :Obtener datos de conexión;
+    :Identificar motor de base de datos;
+
+    if (Motor = PostgreSQL?) then (Sí)
+      :Ejecutar checkPostgres();
+      :Consultar disponibilidad y métricas;
+    elseif (Motor = SQLServer?) then (Sí)
+      :Ejecutar checkSQLServer();
+      :Consultar disponibilidad;
+    elseif (Motor = Oracle?) then (Sí)
+      :Ejecutar checkOracle();
+      :Consultar disponibilidad;
+    else (No soportado)
+      :Registrar error de motor no soportado;
+    endif
+
+    if (¿Conexión exitosa?) then (Sí)
+      :Actualizar estado ACTIVE;
+      :Guardar mensaje de conexión exitosa;
+    else (No)
+      :Actualizar estado ERROR;
+      :Guardar mensaje de error;
+    endif
+
+    :Registrar resultado en health_logs;
+    :Guardar métricas en db_metrics;
+
+  repeat while (¿Quedan conexiones por revisar?) is (Sí)
+
+else (No)
+  :No hay conexiones registradas;
+endif
+
+:Finalizar monitoreo automático;
+
+stop
+@enduml

@@ -1,0 +1,63 @@
+@startuml
+title Diagrama de Componentes - DataOps Control Center
+
+skinparam componentStyle rectangle
+skinparam shadowing false
+
+package "Frontend" {
+  [index.html] as Index
+  [styles.css] as Styles
+  [config.js] as Config
+  [app.js] as App
+  [api.service.js] as ApiService
+  [dashboard.ui.js] as DashboardUI
+  [metrics.ui.js] as MetricsUI
+  [alerts.ui.js] as AlertsUI
+  [connections.ui.js] as ConnectionsUI
+}
+
+package "Backend" {
+  [server.js] as Server
+  [app.js] as BackendApp
+  [Routes] as Routes
+  [Controllers] as Controllers
+  [Services] as Services
+  [Jobs] as Jobs
+  [DB Pool] as DBPool
+}
+
+database "PostgreSQL Central" as DB
+
+package "Tablas" {
+  [connections]
+  [health_logs]
+  [db_metrics]
+  [alert_log]
+}
+
+Index --> App
+Styles --> Index
+Config --> App
+App --> ApiService
+App --> DashboardUI
+App --> MetricsUI
+App --> AlertsUI
+App --> ConnectionsUI
+
+ApiService --> Routes : HTTP Requests
+
+Server --> BackendApp
+BackendApp --> Routes
+Routes --> Controllers
+Controllers --> Services
+Controllers --> DBPool
+Jobs --> Services
+Jobs --> DBPool
+
+DBPool --> DB
+DB --> [connections]
+DB --> [health_logs]
+DB --> [db_metrics]
+DB --> [alert_log]
+
+@enduml

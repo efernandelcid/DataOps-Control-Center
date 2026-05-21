@@ -1,0 +1,76 @@
+@startuml
+title Arquitectura General - DataOps Control Center
+
+skinparam componentStyle rectangle
+skinparam shadowing false
+
+actor "Usuario / Administrador" as User
+
+package "Frontend Web" {
+  [Dashboard Web\nHTML + CSS + JavaScript] as Frontend
+  [Chart.js\nGráficas] as Charts
+  [Exportación CSV] as CSV
+  [Filtros y Alertas] as Filters
+}
+
+package "Backend API REST" {
+  [Node.js + Express] as API
+  [Controladores] as Controllers
+  [Rutas] as Routes
+  [Servicios de Monitoreo] as Services
+  [Jobs Automáticos] as Jobs
+  [Monitoring Job\nCada 30 segundos] as Monitoring
+  [Cleanup Job\nLimpieza de logs] as Cleanup
+}
+
+database "PostgreSQL Central\nDataOps Control Center" as CentralDB {
+}
+
+package "Tablas principales" {
+  [connections]
+  [health_logs]
+  [db_metrics]
+  [alert_log]
+}
+
+database "PostgreSQL\nMonitoreado" as PG
+database "SQL Server\nMonitoreado" as SQLS
+database "Oracle\nMonitoreado" as ORA
+
+package "Docker Compose" {
+  [PostgreSQL Container] as DockerPG
+  [Redis Container] as Redis
+  [pgAdmin Container] as PgAdmin
+  [Backend Container] as BackendContainer
+}
+
+User --> Frontend
+
+Frontend --> API : Solicitudes HTTP
+Frontend --> Charts
+Frontend --> CSV
+Frontend --> Filters
+
+API --> Routes
+Routes --> Controllers
+Controllers --> Services
+Controllers --> CentralDB
+Jobs --> Monitoring
+Jobs --> Cleanup
+Monitoring --> Services
+
+Services --> PG : Verificar conexión
+Services --> SQLS : Verificar conexión
+Services --> ORA : Verificar conexión
+
+CentralDB --> [connections]
+CentralDB --> [health_logs]
+CentralDB --> [db_metrics]
+CentralDB --> [alert_log]
+
+DockerPG --> CentralDB
+PgAdmin --> CentralDB
+BackendContainer --> API
+Redis --> API
+
+@enduml
