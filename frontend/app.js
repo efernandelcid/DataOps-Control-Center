@@ -1,3 +1,12 @@
+const token = localStorage.getItem("token");
+
+if (!token) {
+  window.location.href = "login.html";
+}
+
+const username = localStorage.getItem("username");
+const role = localStorage.getItem("role");
+
 import {
   getConnections,
   getAlerts,
@@ -133,6 +142,20 @@ function aplicarFiltrosConexiones() {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
+  const sessionUser = document.getElementById("sessionUser");
+  const sessionRole = document.getElementById("sessionRole");
+  const logoutBtn = document.getElementById("logoutBtn");
+
+  if (sessionUser) sessionUser.textContent = `Usuario: ${username}`;
+  if (sessionRole) sessionRole.textContent = `Rol: ${role}`;
+
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", () => {
+      localStorage.clear();
+      window.location.href = "login.html";
+    });
+  }
+
   document.getElementById("searchConnection")?.addEventListener("input", aplicarFiltrosConexiones);
   document.getElementById("filterMotor")?.addEventListener("change", aplicarFiltrosConexiones);
   document.getElementById("filterStatus")?.addEventListener("change", aplicarFiltrosConexiones);

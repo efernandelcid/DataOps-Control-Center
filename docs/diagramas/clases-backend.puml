@@ -1,0 +1,118 @@
+@startuml
+title Diagrama de Clases General - Backend DataOps Control Center
+
+class App {
+  +configurarMiddlewares()
+  +registrarRutas()
+}
+
+class Server {
+  +iniciarServidor()
+  +startMonitoringJob()
+  +startCleanupJob()
+}
+
+class PoolDB {
+  +query(sql, params)
+}
+
+class ConnectionController {
+  +getConnections(req, res)
+  +createConnection(req, res)
+}
+
+class HealthCheckController {
+  +checkConnectionById(req, res)
+}
+
+class MetricsController {
+  +getMetrics(req, res)
+}
+
+class DbMetricsController {
+  +getDbMetrics(req, res)
+}
+
+class AlertsController {
+  +getAlerts(req, res)
+}
+
+class SystemStatusController {
+  +getSystemStatus(req, res)
+}
+
+class DatabaseCheckService {
+  +checkDatabase(connection)
+  -checkPostgres(connection)
+  -checkSQLServer(connection)
+  -checkOracle(connection)
+}
+
+class MonitoringJob {
+  +startMonitoringJob()
+}
+
+class CleanupJob {
+  +startCleanupJob()
+}
+
+class Connection {
+  +id
+  +nombre
+  +motor
+  +host
+  +port
+  +database_name
+  +user_name
+  +status
+  +last_message
+}
+
+class HealthLog {
+  +id
+  +connection_id
+  +status
+  +message
+  +response_time_ms
+  +checked_at
+}
+
+class DbMetric {
+  +id
+  +connection_id
+  +cpu
+  +memory
+  +connections_count
+  +locks_count
+  +deadlocks_count
+  +disk_usage_mb
+  +capture_time
+}
+
+App --> ConnectionController
+App --> HealthCheckController
+App --> MetricsController
+App --> DbMetricsController
+App --> AlertsController
+App --> SystemStatusController
+
+Server --> App
+Server --> MonitoringJob
+Server --> CleanupJob
+
+ConnectionController --> PoolDB
+HealthCheckController --> PoolDB
+HealthCheckController --> DatabaseCheckService
+MetricsController --> PoolDB
+DbMetricsController --> PoolDB
+AlertsController --> PoolDB
+SystemStatusController --> PoolDB
+
+MonitoringJob --> PoolDB
+MonitoringJob --> DatabaseCheckService
+CleanupJob --> PoolDB
+
+Connection "1" --> "0..*" HealthLog
+Connection "1" --> "0..*" DbMetric
+
+@enduml

@@ -7,24 +7,29 @@
 </head>
 <body>
   <header>
-    <h1>DataOps Control Center</h1>
-    <p>Plataforma de monitoreo de bases de datos</p>
+  <h1>DataOps Control Center</h1>
+  <p>Plataforma de monitoreo de bases de datos</p>
 
-    <div class="header-status">
-      <div id="apiStatus" class="api-status">
-        Verificando conexión con API...
-      </div>
-
-      <div id="loadingStatus" class="loading-status">
-        Actualizando datos...
-      </div>
-
-      <div id="lastUpdate" class="last-update">
-        Última actualización: pendiente
-      </div>
+  <div class="header-status">
+    <div id="apiStatus" class="api-status">
+      Verificando conexión con API...
     </div>
-  </header>
 
+    <div id="loadingStatus" class="loading-status">
+      Actualizando datos...
+    </div>
+
+    <div id="lastUpdate" class="last-update">
+      Última actualización: pendiente
+    </div>
+  </div>
+
+  <div class="session-bar">
+    <span id="sessionUser">Usuario: -</span>
+    <span id="sessionRole">Rol: -</span>
+    <button id="logoutBtn">Cerrar sesión</button>
+  </div>
+</header>
   <main>
     <section class="cards">
       <div class="card">

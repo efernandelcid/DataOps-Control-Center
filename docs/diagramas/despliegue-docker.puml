@@ -1,0 +1,35 @@
+@startuml
+title Diagrama de Despliegue Docker - DataOps Control Center
+
+node "Equipo Local / Servidor" {
+
+  node "Docker Compose" {
+
+    node "Contenedor PostgreSQL" as PGContainer {
+      database "dataops_control_center" as DB
+    }
+
+    node "Contenedor Redis" as RedisContainer {
+      [Redis Service]
+    }
+
+    node "Contenedor pgAdmin" as PgAdminContainer {
+      [pgAdmin Web]
+    }
+
+    node "Contenedor Backend" as BackendContainer {
+      [Node.js + Express API]
+    }
+  }
+
+  node "Frontend Local" {
+    [Dashboard Web\nLive Server]
+  }
+}
+
+[Dashboard Web\nLive Server] --> [Node.js + Express API] : HTTP / API REST
+[Node.js + Express API] --> DB : Consultas SQL
+[Node.js + Express API] --> [Redis Service] : Servicio auxiliar
+[pgAdmin Web] --> DB : Administración
+
+@enduml

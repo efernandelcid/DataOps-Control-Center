@@ -6,6 +6,8 @@ export function renderTablaConexiones(conexiones) {
   const tbody = document.getElementById("connectionsTable");
   if (!tbody) return;
 
+  const role = localStorage.getItem("role");
+
   tbody.innerHTML = "";
 
   conexiones.forEach(c => {
@@ -22,7 +24,11 @@ export function renderTablaConexiones(conexiones) {
         </td>
         <td>${c.last_message || "Sin revisión reciente"}</td>
         <td>
-          <button onclick="checkConnection(${c.id})">Check</button>
+          ${
+            role === "ADMIN"
+              ? `<button onclick="checkConnection(${c.id})">Check</button>`
+              : `<span class="viewer-badge">Solo lectura</span>`
+          }
         </td>
       </tr>
     `;

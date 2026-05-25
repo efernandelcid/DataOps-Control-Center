@@ -5,25 +5,34 @@ import healthRoutes from "./routes/health.routes.js";
 import dbRoutes from "./routes/db.routes.js";
 import dbMetricsRoutes from "./routes/dbMetrics.routes.js";
 import connectionsRoutes from "./routes/connections.routes.js";
-
 import healthCheckRoutes from "./routes/healthCheck.routes.js";
 import metricsRoutes from "./routes/metrics.routes.js";
 import alertsRoutes from "./routes/alerts.routes.js";
 import systemStatusRoutes from "./routes/systemStatus.routes.js";
+import authRoutes from "./routes/auth.routes.js";
 
+import { verifyToken, requireRole } from "./middlewares/auth.middleware.js";
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
-app.use("/api/health", healthRoutes);
-app.use("/api/db", dbRoutes);
-app.use("/api/connections", connectionsRoutes);
-app.use("/api/connections", healthCheckRoutes);
-app.use("/api/metrics", metricsRoutes);
-app.use("/api/alerts", alertsRoutes);
-app.use("/api/db-metrics", dbMetricsRoutes);
-app.use("/api/system-status", systemStatusRoutes);
+app.use("/api/auth", authRoutes);
+
+app.use("/api/health", verifyToken, healthRoutes);
+app.use("/api/db", verifyToken, dbRoutes);
+app.use("/api/connections", verifyToken, connectionsRoutes);
+app.use("/api/metrics", verifyToken, metricsRoutes);
+app.use("/api/alerts", verifyToken, alertsRoutes);
+app.use("/api/db-metrics", verifyToken, dbMetricsRoutes);
+app.use("/api/system-status", verifyToken, systemStatusRoutes);
+
+app.use(
+  "/api/connections",
+  verifyToken,
+  requireRole("ADMIN"),
+  healthCheckRoutes
+);
 
 export default app;
