@@ -10,8 +10,13 @@ import metricsRoutes from "./routes/metrics.routes.js";
 import alertsRoutes from "./routes/alerts.routes.js";
 import systemStatusRoutes from "./routes/systemStatus.routes.js";
 import authRoutes from "./routes/auth.routes.js";
+import dashboardRoutes from "./routes/dashboard.routes.js";
+import transactionRoutes from "./routes/transaction.routes.js";
+import backupRoutes from "./routes/backup.routes.js";
+import replicationRoutes from "./routes/replication.routes.js";
 
 import { verifyToken, requireRole } from "./middlewares/auth.middleware.js";
+import failoverRoutes from "./routes/failover.routes.js";
 
 const app = express();
 
@@ -27,6 +32,12 @@ app.use("/api/metrics", verifyToken, metricsRoutes);
 app.use("/api/alerts", verifyToken, alertsRoutes);
 app.use("/api/db-metrics", verifyToken, dbMetricsRoutes);
 app.use("/api/system-status", verifyToken, systemStatusRoutes);
+app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/transactions", transactionRoutes);
+app.use("/api/backups", backupRoutes);
+app.use("/api/replication", replicationRoutes );
+app.use("/api/failover", failoverRoutes);
+
 
 app.use(
   "/api/connections",

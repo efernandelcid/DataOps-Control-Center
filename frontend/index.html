@@ -5,31 +5,33 @@
   <title>DataOps Control Center</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
+
 <body>
   <header>
-  <h1>DataOps Control Center</h1>
-  <p>Plataforma de monitoreo de bases de datos</p>
+    <h1>DataOps Control Center</h1>
+    <p>Plataforma de monitoreo de bases de datos</p>
 
-  <div class="header-status">
-    <div id="apiStatus" class="api-status">
-      Verificando conexión con API...
+    <div class="header-status">
+      <div id="apiStatus" class="api-status">
+        Verificando conexión con API...
+      </div>
+
+      <div id="loadingStatus" class="loading-status">
+        Actualizando datos...
+      </div>
+
+      <div id="lastUpdate" class="last-update">
+        Última actualización: pendiente
+      </div>
     </div>
 
-    <div id="loadingStatus" class="loading-status">
-      Actualizando datos...
+    <div class="session-bar">
+      <span id="sessionUser">Usuario: -</span>
+      <span id="sessionRole">Rol: -</span>
+      <button id="logoutBtn">Cerrar sesión</button>
     </div>
+  </header>
 
-    <div id="lastUpdate" class="last-update">
-      Última actualización: pendiente
-    </div>
-  </div>
-
-  <div class="session-bar">
-    <span id="sessionUser">Usuario: -</span>
-    <span id="sessionRole">Rol: -</span>
-    <button id="logoutBtn">Cerrar sesión</button>
-  </div>
-</header>
   <main>
     <section class="cards">
       <div class="card">
@@ -157,6 +159,59 @@
     <section class="panel">
       <h2>Rendimiento en tiempo real</h2>
       <canvas id="responseChart"></canvas>
+    </section>
+
+    <section class="panel">
+      <h2>Backups recientes</h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Tipo</th>
+            <th>Archivo</th>
+            <th>Tamaño MB</th>
+            <th>Duración</th>
+            <th>Estado</th>
+            <th>Fecha</th>
+          </tr>
+        </thead>
+        <tbody id="backupsTable"></tbody>
+      </table>
+    </section>
+
+    <section class="panel">
+      <h2>Replicación</h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Primaria</th>
+            <th>Réplica</th>
+            <th>Lag ms</th>
+            <th>Estado</th>
+            <th>Fecha</th>
+          </tr>
+        </thead>
+        <tbody id="replicationTable"></tbody>
+      </table>
+    </section>
+
+    <section class="panel">
+      <h2>Eventos de Failover</h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Primaria</th>
+            <th>Réplica</th>
+            <th>Motivo</th>
+            <th>Recovery</th>
+            <th>Estado</th>
+            <th>Fecha</th>
+          </tr>
+        </thead>
+        <tbody id="failoverTable"></tbody>
+      </table>
     </section>
   </main>
 

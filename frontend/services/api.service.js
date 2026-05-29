@@ -44,3 +44,21 @@ export async function checkConnectionById(id) {
     headers: getAuthHeaders()
   });
 }
+
+export async function getBackups() {
+  return await fetch(`${API_URL}/backups`, {
+    headers: getAuthHeaders()
+  }).then(res => res.json());
+}
+
+export async function getReplication() {
+  return await fetch(`${API_URL}/replication`, {
+    headers: getAuthHeaders()
+  }).then(res => res.json());
+}
+
+export async function getFailoverHistory() {
+  return await fetch(`${API_URL}/failover`, {
+    headers: getAuthHeaders()
+  }).then(res => res.json());
+}

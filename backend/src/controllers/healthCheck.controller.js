@@ -1,5 +1,6 @@
 import pool from "../db/pool.js";
 import { checkDatabase } from "../services/databaseCheck.service.js";
+import { setCache } from "../services/cache.service.js";
 
 export const checkConnectionById = async (req, res) => {
   try {
@@ -41,6 +42,8 @@ export const checkConnectionById = async (req, res) => {
       ]
     );
 
+    await setCache("connections:list", null, 1);
+
     await pool.query(
       `
       INSERT INTO health_logs
@@ -54,6 +57,21 @@ export const checkConnectionById = async (req, res) => {
         responseTime
       ]
     );
+
+    if (health.status === "ERROR") {
+  await pool.query(
+    `
+    INSERT INTO alert_log
+    (db_id, condition_triggered, status)
+    VALUES ($1, $2, $3)
+    `,
+    [
+      id,
+      `Fallo de conexión: ${health.message}`,
+      "OPEN"
+    ]
+  );
+}
 
     res.json({
       connection_id: id,
